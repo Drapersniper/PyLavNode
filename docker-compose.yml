@@ -1,0 +1,7 @@
+services:
+  ll-node:
+    image: drapersniper/pylav-node:v4
+    ports:
+      - "2155:2155"
+    volumes:
+      - .../application.yml:/opt/Lavalink/application.yml
