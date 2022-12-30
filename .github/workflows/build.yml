@@ -29,7 +29,7 @@ jobs:
         env:
             APPLICATION_YAML: ${{ secrets.APPLICATION_YAML }}
         with:
-          args: -o ./extras/docker-compose.yml $APPLICATION_YAML
+          args: -o ./extras/application-ignore.yml $APPLICATION_YAML
       -
         name: "Download Latest Lavalink.jar"
         run: |
