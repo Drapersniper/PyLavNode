@@ -1,15 +1,8 @@
 name: Build
 on:
-  schedule:
-    - cron: "0 10 * * *"
   push:
-    branches:
-      - "**"
-    tags:
-      - "v*.*.*"
-  pull_request:
-    branches:
-      - "master"
+    paths:
+      - 'action-run/*'
   workflow_dispatch:
 
 
@@ -33,14 +26,14 @@ jobs:
       -
         name: "Download Latest Lavalink.jar"
         run: |
-          OTHER_REPO="TopiSenpai/Lavalink"
-          WF_NAME="Build"
-          ARTIFACT_NAME="Lavalink.jar"
-          BRANCH="v4-plugin-track-modifications"
           RUN_ID=`gh run --repo ${OTHER_REPO} list --branch ${BRANCH} --workflow ${WF_NAME} --json databaseId --jq .[0].databaseId`
           gh run --repo ${OTHER_REPO} download ${RUN_ID} -n ${ARTIFACT_NAME} --dir ./extras
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          OTHER_REPO: ${{ secrets.REPO }}
+          WF_NAME: ${{ secrets.WF_NAME }}
+          BRANCH: ${{ secrets.REPO_BRANCH_NAME }}
+          ARTIFACT_NAME: ${{ secrets.ARTIFACT_NAME }}
       -
         name: Docker meta
         id: meta
