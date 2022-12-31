@@ -2,6 +2,7 @@ name: Get latest action on repo
 on:
   schedule:
     - cron:  '*/15 * * * *'
+  workflow_dispatch:
 jobs:
   get-version:
     runs-on: ubuntu-latest
