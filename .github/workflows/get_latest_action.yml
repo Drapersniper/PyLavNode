@@ -4,7 +4,7 @@ on:
     - cron:  '*/15 * * * *'
   workflow_dispatch:
 jobs:
-  get-version:
+  get-workflow:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
