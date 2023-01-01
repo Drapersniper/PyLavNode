@@ -3,5 +3,18 @@ services:
     image: drapersniper/pylav-node:latest
     ports:
       - "2155:2155"
-    volumes:
-      - ./application.yml:/opt/Lavalink/application.yml
+    environment:
+      LAVALINK_SERVER_PASSWORD: youshallnotpass # Lavalink Server Password
+      _JAVA_OPTIONS: -Xmx4G
+      # Read https://github.com/TopiSenpai/LavaSrc/tree/feature/custom-json-fields#configuration for more info on these setting values
+      PLUGINS_LAVASRC_SOURCES_SPOTIFY: false
+      PLUGINS_LAVASRC_SPOTIFY_CLIENTID: CHANGE_ME
+      PLUGINS_LAVASRC_SPOTIFY_CLIENTSECRET: CHANGE_ME
+      PLUGINS_LAVASRC_SPOTIFY_COUNTRYCODE: US
+
+      PLUGINS_LAVASRC_SOURCES_APPLEMUSIC: true
+      PLUGINS_LAVASRC_APPLEMUSIC_COUNTRYCODE: US
+      PLUGINS_LAVASRC_APPLEMUSIC_MEDIAAPITOKEN: # Not necessary if you don't have a developer token
+
+      PLUGINS_LAVASRC_SOURCES_YANDEXMUSIC: false
+      PLUGINS_LAVASRC_YANDEXMUSIC_ACCESSTOKEN:
