@@ -5,6 +5,7 @@ on:
   workflow_dispatch:
 jobs:
   get-workflow:
+    environment: Docker build
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v3
@@ -15,7 +16,6 @@ jobs:
       - name: Fetch action identifier
         run: |
           echo "Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ vars.UPSTREAM_BRANCH }}  WF: ${{ vars.UPSTREAM_WF }}"
-                    echo "env - Branch: ${{ env.UPSTREAM_REPO }}  Branch: ${{ env.UPSTREAM_BRANCH }}  WF: ${{ env.UPSTREAM_WF }}"
           RUN_ID=`gh run --repo "${{ vars.UPSTREAM_REPO }}" list --branch "${{ vars.UPSTREAM_BRANCH }}" --workflow "${{ vars.UPSTREAM_WF }}" --json databaseId --jq .[0].databaseId`
           echo $RUN_ID > ./action-run/latest-action-run.txt
         env:

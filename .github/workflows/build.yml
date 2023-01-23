@@ -8,6 +8,7 @@ on:
 
 jobs:
   docker:
+    environment: Docker build
     runs-on: ubuntu-latest
     steps:
       -
@@ -25,7 +26,6 @@ jobs:
         name: "Download Latest Lavalink.jar"
         run: |
           echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ vars.UPSTREAM_BRANCH }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
-          echo "env - Branch: ${{ env.UPSTREAM_REPO }}  Branch: ${{ env.UPSTREAM_BRANCH }}  WF: ${{ env.UPSTREAM_WF }} Artifact: ${{ env.UPSTREAM_ARTIFACT }}"
           RUN_ID=`gh run --repo "${{ vars.UPSTREAM_REPO }}" list --branch "${{ vars.UPSTREAM_BRANCH }}" --workflow "${{ vars.UPSTREAM_WF }}" --json databaseId --jq .[0].databaseId`
           gh run --repo "${{ vars.UPSTREAM_REPO }}" download $RUN_ID -n "${{ vars.UPSTREAM_ARTIFACT }}" --dir ./extras
         env:
