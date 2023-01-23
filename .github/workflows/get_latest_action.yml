@@ -3,6 +3,12 @@ on:
   schedule:
     - cron:  '*/15 * * * *'
   workflow_dispatch:
+env:
+  # Setting an environment variable with the value of a configuration variable
+  UPSTREAM_REPO: ${{ vars.OTHER_REPO }}
+  UPSTREAM_WF_NAME: ${{ vars.WF_NAME }}
+  UPSTREAM_BRANCH: ${{ vars.BRANCH }}
+  
 jobs:
   get-workflow:
     runs-on: ubuntu-latest
@@ -14,13 +20,11 @@ jobs:
           mkdir -p ./action-run
       - name: Fetch action identifier
         run: |
-          RUN_ID=`gh run --repo ${OTHER_REPO} list --branch ${BRANCH} --workflow ${WF_NAME} --json databaseId --jq .[0].databaseId`
+          RUN_ID=`gh run --repo ${UPSTREAM_REPO} list --branch ${UPSTREAM_BRANCH} --workflow ${UPSTREAM_BRANCH} --json databaseId --jq .[0].databaseId`
           echo $RUN_ID > ./action-run/latest-action-run.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OTHER_REPO: ${{ secrets.REPO }}
-          WF_NAME: ${{ secrets.WF_NAME }}
-          BRANCH: ${{ secrets.REPO_BRANCH_NAME }}
+
       - name: Check for modified files
         id: git-check
         run: |
