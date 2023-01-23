@@ -6,14 +6,6 @@ on:
   workflow_dispatch:
 
 
-env:
-  # Setting an environment variable with the value of a configuration variable
-  UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO }}
-  UPSTREAM_WF: ${{ vars.UPSTREAM_WF }}
-  UPSTREAM_BRANCH: ${{ vars.UPSTREAM_BRANCH }}
-  UPSTREAM_ARTIFACT: ${{ vars.UPSTREAM_ARTIFACT }}
-  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-
 jobs:
   docker:
     runs-on: ubuntu-latest
@@ -27,16 +19,16 @@ jobs:
       -
         name: curl
         uses: wei/curl@v1
-        env:
-            APPLICATION_YAML: ${{ vars.APPLICATION_YAML }}
         with:
-          args: -o ./extras/application-ignore.yml $APPLICATION_YAML
+          args: -o ./extras/application-ignore.yml ${{ vars.APPLICATION_YAML }}
       -
         name: "Download Latest Lavalink.jar"
         run: |
-          echo "Branch: $UPSTREAM_REPO  Branch: $UPSTREAM_BRANCH  WF: $UPSTREAM_WF Artifact: $UPSTREAM_ARTIFACT"
-          RUN_ID=`gh run --repo "$UPSTREAM_REPO" list --branch "$UPSTREAM_BRANCH" --workflow "$UPSTREAM_WF" --json databaseId --jq .[0].databaseId`
-          gh run --repo "$UPSTREAM_REPO" download $RUN_ID -n "$UPSTREAM_ARTIFACT" --dir ./extras
+          echo "Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ vars.UPSTREAM_BRANCH }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
+          RUN_ID=`gh run --repo "${{ vars.UPSTREAM_REPO }}" list --branch "${{ vars.UPSTREAM_BRANCH }}" --workflow "${{ vars.UPSTREAM_WF }}" --json databaseId --jq .[0].databaseId`
+          gh run --repo "${{ vars.UPSTREAM_REPO }}" download $RUN_ID -n "${{ vars.UPSTREAM_ARTIFACT }}" --dir ./extras
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
         name: Docker meta
         id: meta
