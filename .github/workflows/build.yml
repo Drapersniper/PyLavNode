@@ -4,7 +4,12 @@ on:
     paths:
       - 'action-run/*'
   workflow_dispatch:
-
+env:
+  # Setting an environment variable with the value of a configuration variable
+  UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO }}
+  UPSTREAM_WF_NAME: ${{ vars.UPSTREAM_WF_NAME }}
+  UPSTREAM_BRANCH: ${{ vars.UPSTREAM_BRANCH }}
+  ARTIFACT_NAME: ${{ vars.ARTIFACT_NAME }}
 
 jobs:
   docker:
@@ -26,13 +31,10 @@ jobs:
       -
         name: "Download Latest Lavalink.jar"
         run: |
-          RUN_ID=`gh run --repo ${OTHER_REPO} list --branch ${BRANCH} --workflow ${WF_NAME} --json databaseId --jq .[0].databaseId`
-          gh run --repo ${OTHER_REPO} download ${RUN_ID} -n ${ARTIFACT_NAME} --dir ./extras
+          RUN_ID=`gh run --repo ${UPSTREAM_REPO} list --branch ${UPSTREAM_BRANCH} --workflow ${UPSTREAM_WF_NAME} --json databaseId --jq .[0].databaseId`
+          gh run --repo ${UPSTREAM_REPO} download ${RUN_ID} -n ${ARTIFACT_NAME} --dir ./extras
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          OTHER_REPO: ${{ secrets.REPO }}
-          WF_NAME: ${{ secrets.WF_NAME }}
-          BRANCH: ${{ secrets.REPO_BRANCH_NAME }}
           ARTIFACT_NAME: ${{ secrets.ARTIFACT_NAME }}
       -
         name: Docker meta
