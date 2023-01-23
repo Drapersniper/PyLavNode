@@ -5,9 +5,9 @@ on:
   workflow_dispatch:
 env:
   # Setting an environment variable with the value of a configuration variable
-  UPSTREAM_REPO: ${{ vars.OTHER_REPO }}
-  UPSTREAM_WF_NAME: ${{ vars.WF_NAME }}
-  UPSTREAM_BRANCH: ${{ vars.BRANCH }}
+  UPSTREAM_REPO: ${{ vars.UPSTREAM_REPO }}
+  UPSTREAM_WF: ${{ vars.UPSTREAM_WF }}
+  UPSTREAM_BRANCH: ${{ vars.UPSTREAM_BRANCH }}
   
 jobs:
   get-workflow:
@@ -20,7 +20,7 @@ jobs:
           mkdir -p ./action-run
       - name: Fetch action identifier
         run: |
-          RUN_ID=`gh run --repo ${UPSTREAM_REPO} list --branch ${UPSTREAM_BRANCH} --workflow ${UPSTREAM_BRANCH} --json databaseId --jq .[0].databaseId`
+          RUN_ID=`gh run --repo ${UPSTREAM_REPO} list --branch ${UPSTREAM_BRANCH} --workflow ${UPSTREAM_WF} --json databaseId --jq .[0].databaseId`
           echo $RUN_ID > ./action-run/latest-action-run.txt
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
