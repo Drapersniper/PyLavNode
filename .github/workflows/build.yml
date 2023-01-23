@@ -31,8 +31,9 @@ jobs:
       -
         name: "Download Latest Lavalink.jar"
         run: |
-          RUN_ID=`gh run --repo ${UPSTREAM_REPO} list --branch ${UPSTREAM_BRANCH} --workflow ${UPSTREAM_WF} --json databaseId --jq .[0].databaseId`
-          gh run --repo ${UPSTREAM_REPO} download ${RUN_ID} -n ${UPSTREAM_ARTIFACT} --dir ./extras
+          echo "Branch: ${UPSTREAM_REPO}  Branch: ${UPSTREAM_BRANCH}  WF: ${UPSTREAM_WF} Artifact: ${UPSTREAM_ARTIFACT}"
+          RUN_ID=`gh run --repo "${UPSTREAM_REPO}" list --branch "${UPSTREAM_BRANCH}" --workflow "${UPSTREAM_WF}" --json databaseId --jq .[0].databaseId`
+          gh run --repo "${UPSTREAM_REPO}" download ${RUN_ID} -n "${UPSTREAM_ARTIFACT}" --dir ./extras
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       -
