@@ -9,7 +9,7 @@ on:
 jobs:
   docker:
     environment: Docker build
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, x64]
     steps:
       -
         name: Checkout
@@ -17,11 +17,9 @@ jobs:
       -
         run: |
           mkdir -p ./extras
-      -
-        name: curl
-        uses: wei/curl@v1
-        with:
-          args: -o ./extras/application-ignore.yml ${{ vars.APPLICATION_YAML }}
+      - name: Download application.yml
+        run: |
+          curl -o ./extras/application-ignore.yml ${{ vars.APPLICATION_YAML }}
       -
         name: "Download Latest Lavalink.jar"
         run: |
