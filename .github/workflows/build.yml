@@ -67,7 +67,7 @@ jobs:
             type=raw,enable=true,priority=1000,prefix=${{steps.get-run-meta.outputs.branch}}-,value=latest
             type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-run-meta.outputs.branch}}
             type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-run-meta.outputs.head_sha}}
-            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == env.UPSTREAM_V4_FEATURE_BRANCH }}
+            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.V4_FEATURE }}
 
       -
         name: Set up QEMU
