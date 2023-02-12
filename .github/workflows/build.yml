@@ -12,11 +12,13 @@ jobs:
       fail-fast: false
       matrix:
         branch:
-        - ${{ vars.UPSTREAM_V4_BRANCH }}
-        - ${{ vars.UPSTREAM_DEV_BRANCH }}
-        - ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
-        - ${{ vars.UPSTREAM_STABLE_BRANCH }}
+          - "${{ vars.UPSTREAM_V4_BRANCH }}"
+          - "${{ vars.UPSTREAM_DEV_BRANCH }}"
+          - "${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}"
+          - "${{ vars.UPSTREAM_STABLE_BRANCH }}"
     runs-on: [self-hosted, linux, x64]
+    env:
+      UPSTREAM_BRANCH: "${{ matrix.branch }}"
     steps:
       -
         name: Checkout
@@ -24,13 +26,15 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ matrix.branch }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
-          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{ matrix.branch  }} --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
+          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: $UPSTREAM_BRANCH  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
+          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch $UPSTREAM_BRANCH --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
           echo "RESPONSE: $RESPONSE"
           echo run_id=$(echo $RESPONSE | cut -f1 -d' ')  >> $GITHUB_OUTPUT
           echo head_sha=$(echo $RESPONSE | cut -f2 -d' ')  >> $GITHUB_OUTPUT
           echo branch=$(echo $RESPONSE | cut -f3 -d' ')  >> $GITHUB_OUTPUT
           echo success=$(echo $RESPONSE | cut -f4 -d' ')  >> $GITHUB_OUTPUT
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       -
         if: steps.get-version.outputs.success == 'success'
