@@ -1,37 +1,53 @@
-name: Build
+name: Build Images
 on:
-  push:
-    paths:
-      - 'action-run/*'
-    tags:
-      - 'v*'
+  schedule:
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 
 jobs:
   docker:
     environment: Docker build
+    strategy:
+      fail-fast: false
+      matrix:
+        branch: [${{ vars.UPSTREAM_V4_BRANCH }}, ${{ vars.UPSTREAM_DEV_BRANCH }}, ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}, ${{ vars.UPSTREAM_STABLE_BRANCH }} ]
     runs-on: [self-hosted, linux, x64]
     steps:
       -
         name: Checkout
         uses: actions/checkout@v3
+      - name: Get Version
+        id: get-version
+        run: |
+          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ matrix.branch }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
+          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{ matrix.branch  }} --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
+          echo "RESPONSE: $RESPONSE"
+          echo run_id=$(echo $RESPONSE | cut -f1 -d' ')  >> $GITHUB_OUTPUT
+          echo head_sha=$(echo $RESPONSE | cut -f2 -d' ')  >> $GITHUB_OUTPUT
+          echo branch=$(echo $RESPONSE | cut -f3 -d' ')  >> $GITHUB_OUTPUT
+          echo success=$(echo $RESPONSE | cut -f4 -d' ')  >> $GITHUB_OUTPUT
+
       -
+        if: steps.get-version.outputs.success == 'success'
         run: |
           mkdir -p ./extras
+
       - name: Download application.yml
+        if: steps.get-version.outputs.success == 'success'
         run: |
           curl -o ./extras/application-ignore.yml ${{ vars.APPLICATION_YAML }}
+
       -
         name: "Download Latest Lavalink.jar"
+        if: steps.get-version.outputs.success == 'success'
         run: |
-          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ vars.UPSTREAM_BRANCH }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
-          RUN_ID=`gh run --repo "${{ vars.UPSTREAM_REPO }}" list --branch "${{ vars.UPSTREAM_BRANCH }}" --workflow "${{ vars.UPSTREAM_WF }}" --json databaseId --jq .[0].databaseId`
-          gh run --repo "${{ vars.UPSTREAM_REPO }}" download $RUN_ID -n "${{ vars.UPSTREAM_ARTIFACT }}" --dir ./extras
+          gh run --repo "${{ vars.UPSTREAM_REPO }}" download ${{steps.get-version.outputs.run_id}} -n "${{ vars.UPSTREAM_ARTIFACT }}" --dir ./extras
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      -
-        name: Docker meta
+
+      - name: Docker meta
+        if: steps.get-version.outputs.success == 'success'
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -41,37 +57,40 @@ jobs:
             ghcr.io/pylav/node
           # generate Docker tags based on the following events/attributes
           tags: |
-            type=schedule
-            type=ref,event=branch
-            type=ref,event=pr
-            type=semver,pattern={{version}}
-            type=semver,pattern={{major}}.{{minor}}
-            type=semver,pattern={{major}}
-            type=sha
-            type=raw,value=latest,enable={{is_default_branch}}
+            type=raw,enable=true,priority=1000,prefix=${{steps.get-version.outputs.branch}}-,value=latest
+            type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-version.outputs.branch}}
+            type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-version.outputs.head_sha}}
+            type=raw,value=latest,enable=${{ steps.get-version.outputs.branch == format('refs/heads/{0}', 'master') }}
+
       -
         name: Set up QEMU
+        if: steps.get-version.outputs.success == 'success'
         uses: docker/setup-qemu-action@v2
+
       -
         name: Set up Docker Buildx
+        if: steps.get-version.outputs.success == 'success'
         uses: docker/setup-buildx-action@v2
+
       -
         name: Login to Docker Hub
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.get-version.outputs.success == 'success'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Login to GHCR
-        if: github.event_name != 'pull_request'
+        if: github.event_name != 'pull_request' && steps.get-version.outputs.success == 'success'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
           username: ${{ github.repository_owner }}
           password: ${{ secrets.GITHUB_TOKEN }}
+
       -
         name: Build and push
+        if: steps.get-version.outputs.success == 'success'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -81,5 +100,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha
-          cache-to: type=gha,mode=max
+          cache-from: type=local,src=/tmp/cache-action/docker/${{ matrix.branch }}
+          cache-to: type=local,src=/tmp/cache-action/docker/${{ matrix.branch }}
