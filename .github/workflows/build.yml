@@ -4,21 +4,26 @@ on:
     - cron: '*/5 * * * *'
   workflow_dispatch:
 
+env:
+    env_var: Docker build
+    UPSTREAM_STABLE_BRANCH: ${{ vars.UPSTREAM_STABLE_BRANCH }}
+    UPSTREAM_V4_BRANCH: ${{ vars.UPSTREAM_V4_BRANCH }}
+    UPSTREAM_DEV_BRANCH: ${{ vars.UPSTREAM_DEV_BRANCH }}
+    UPSTREAM_V4_FEATURE_BRANCH: ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
+
 
 jobs:
   docker:
-    environment: Docker build
+    environment: $env_var
     strategy:
       fail-fast: false
       matrix:
         branch:
-          - "${{ vars.UPSTREAM_V4_BRANCH }}"
-          - "${{ vars.UPSTREAM_DEV_BRANCH }}"
-          - "${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}"
-          - "${{ vars.UPSTREAM_STABLE_BRANCH }}"
+            - $UPSTREAM_STABLE_BRANCH
+            - $UPSTREAM_DEV_BRANCH
+            - $UPSTREAM_V4_BRANCH
+            - $UPSTREAM_V4_FEATURE_BRANCH
     runs-on: [self-hosted, linux, x64]
-    env:
-      UPSTREAM_BRANCH: "${{ matrix.branch }}"
     steps:
       -
         name: Checkout
@@ -26,8 +31,8 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ env.UPSTREAM_BRANCH }}  WF: ${{ vars.UPSTREAM_WF }}"
-          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{ env.UPSTREAM_BRANCH }} --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
+          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ matrix.branch }}  WF: ${{ vars.UPSTREAM_WF }}"
+          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{ matrix.branch }} --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
           echo "RESPONSE: $RESPONSE"
           echo run_id=$(echo $RESPONSE | cut -f1 -d' ')  >> $GITHUB_OUTPUT
           echo head_sha=$(echo $RESPONSE | cut -f2 -d' ')  >> $GITHUB_OUTPUT
@@ -35,6 +40,8 @@ jobs:
           echo success=$(echo $RESPONSE | cut -f4 -d' ')  >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+
 
       -
         if: steps.get-version.outputs.success == 'success'
@@ -68,7 +75,7 @@ jobs:
             type=raw,enable=true,priority=1000,prefix=${{steps.get-version.outputs.branch}}-,value=latest
             type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-version.outputs.branch}}
             type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-version.outputs.head_sha}}
-            type=raw,value=latest,enable=${{ steps.get-version.outputs.branch == format('refs/heads/{0}', 'master') }}
+            type=raw,value=latest,enable=${{ steps.get-version.outputs.branch == env.UPSTREAM_V4_FEATURE_BRANCH }}
 
       -
         name: Set up QEMU
