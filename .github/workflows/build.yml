@@ -8,19 +8,14 @@ on:
 jobs:
   docker:
     environment: Docker build
-    env:
-      UPSTREAM_STABLE_BRANCH: ${{ vars.UPSTREAM_STABLE_BRANCH }}
-      UPSTREAM_V4_BRANCH: ${{ vars.UPSTREAM_V4_BRANCH }}
-      UPSTREAM_DEV_BRANCH: ${{ vars.UPSTREAM_DEV_BRANCH }}
-      UPSTREAM_V4_FEATURE_BRANCH: ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
     strategy:
       fail-fast: false
       matrix:
         branch:
-            - ${{ vars.UPSTREAM_STABLE_BRANCH }}
-            - ${{ vars.UPSTREAM_V4_BRANCH }}
-            - ${{ vars.UPSTREAM_DEV_BRANCH }}
-            - ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
+            - master
+            - dev
+            - v4
+            - feature/plugin-track-modifications
     runs-on: [self-hosted, linux, x64]
     steps:
       -
