@@ -26,8 +26,8 @@ jobs:
       - name: Get Version
         id: get-version
         run: |
-          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: $UPSTREAM_BRANCH  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
-          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch $UPSTREAM_BRANCH --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
+          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{ env.DAY_OF_WEEK }}  WF: ${{ vars.UPSTREAM_WF }} Artifact: ${{ vars.UPSTREAM_ARTIFACT }}"
+          RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{ env.DAY_OF_WEEK }} --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
           echo "RESPONSE: $RESPONSE"
           echo run_id=$(echo $RESPONSE | cut -f1 -d' ')  >> $GITHUB_OUTPUT
           echo head_sha=$(echo $RESPONSE | cut -f2 -d' ')  >> $GITHUB_OUTPUT
