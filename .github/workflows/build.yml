@@ -11,7 +11,11 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        branch: [${{ vars.UPSTREAM_V4_BRANCH }}, ${{ vars.UPSTREAM_DEV_BRANCH }}, ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}, ${{ vars.UPSTREAM_STABLE_BRANCH }} ]
+        branch:
+        - ${{ vars.UPSTREAM_V4_BRANCH }}
+        - ${{ vars.UPSTREAM_DEV_BRANCH }}
+        - ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
+        - ${{ vars.UPSTREAM_STABLE_BRANCH }}
     runs-on: [self-hosted, linux, x64]
     steps:
       -
