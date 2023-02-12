@@ -1,7 +1,7 @@
 name: Build Images
 on:
   schedule:
-    - cron: '*/5 * * * *'
+    - cron: '*/30 * * * *'
   workflow_dispatch:
 
 
@@ -17,10 +17,10 @@ jobs:
       fail-fast: false
       matrix:
         branch:
-            - ${{ env.UPSTREAM_STABLE_BRANCH }}
-            - ${{ env.UPSTREAM_DEV_BRANCH }}
-            - ${{ env.UPSTREAM_V4_BRANCH }}
-            - ${{ env.UPSTREAM_V4_FEATURE_BRANCH }}
+            - ${{ vars.UPSTREAM_STABLE_BRANCH }}
+            - ${{ vars.UPSTREAM_V4_BRANCH }}
+            - ${{ vars.UPSTREAM_DEV_BRANCH }}
+            - ${{ vars.UPSTREAM_V4_FEATURE_BRANCH }}
     runs-on: [self-hosted, linux, x64]
     steps:
       -
