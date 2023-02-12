@@ -3,6 +3,8 @@ on:
   push:
     paths:
       - 'action-run/*'
+    tags:
+      - 'v*'
   workflow_dispatch:
 
 
