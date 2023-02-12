@@ -1,7 +1,7 @@
 name: Build Images
 on:
   schedule:
-    - cron: '*/30 * * * *'
+    - cron: '*/5 * * * *'
   workflow_dispatch:
 
 
@@ -12,10 +12,10 @@ jobs:
       fail-fast: false
       matrix:
         token:
-            - UPSTREAM_STABLE_BRANCH
-            - UPSTREAM_DEV_BRANCH
-            - UPSTREAM_V4_BRANCH
-            - UPSTREAM_V4_FEATURE_BRANCH
+            - STABLE
+            - DEV
+            - V4
+            - V4_FEATURE
     runs-on: [self-hosted, linux, x64]
     env:
       UPSTREAM_BRANCH: ${{vars[matrix.token]}}
@@ -109,5 +109,5 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=local,src=/tmp/cache-action/docker/${{ steps.get-run-meta.outputs.branch }}
-          cache-to: type=local,src=/tmp/cache-action/docker/${{ steps.get-run-meta.outputs.branch }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
