@@ -25,7 +25,7 @@ jobs:
       - name: Get run meta
         id: get-run-meta
         run: |
-          echo "var- Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{vars[matrix.branch]}}  WF: ${{ vars.UPSTREAM_WF }}"
+          echo "vars - Branch: ${{ vars.UPSTREAM_REPO }}  Branch: ${{vars[matrix.branch]}}  WF: ${{ vars.UPSTREAM_WF }}"
           RESPONSE=`gh run --repo ${{ vars.UPSTREAM_REPO }} list --branch ${{vars[matrix.branch]}}  --workflow "${{ vars.UPSTREAM_WF }}" --json headBranch,headSha,databaseId,conclusion --jq '[.[0].databaseId, .[0].headSha, .[0].headBranch, .[0].conclusion] | @tsv' --limit 1`
           echo "RESPONSE: $RESPONSE"
           echo run_id=$(echo $RESPONSE | cut -f1 -d' ')  >> $GITHUB_OUTPUT
@@ -34,6 +34,34 @@ jobs:
           echo success=$(echo $RESPONSE | cut -f4 -d' ')  >> $GITHUB_OUTPUT
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      -
+          if: steps.get-run-meta.outputs.success == 'success'
+          name: Set Gist File Name
+          run: |
+                if [[ ${{ vars[matrix.branch] == vars.V4_FEATURE }} ]]; then
+                    echo "GIST_NAME=feature.txt" >> "$GITHUB_ENV"
+                else
+                    echo "GIST_NAME=${{vars[matrix.branch]}}.txt" >> "$GITHUB_ENV"
+                fi
+
+      -
+          if: steps.get-run-meta.outputs.success == 'success'
+          name: Read Gist
+          uses: sergeysova/gist-read-action@v1
+          id: counter
+          with:
+            gist_id: $GIST_ID
+            file_name: ${{ env.GIST_NAME }}.txt
+          env:
+            GIST_ID: GIST_${{matrix.branch}}
+            GITHUB_TOKEN: ${{ secrets.PAT }}
+
+      -
+        if: ${{ steps.example-gist.outputs.content == steps.get-run-meta.outputs.head_sha }}
+        name: Check if build is needed
+        run: |
+          exit 0
 
       -
         if: steps.get-run-meta.outputs.success == 'success'
@@ -109,3 +137,13 @@ jobs:
           labels: ${{ steps.meta.outputs.labels }}
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Update Gist
+        if: steps.get-run-meta.outputs.success == 'success'
+        uses: sergeysova/gist-update-action@v1
+        with:
+          gist_id: $GIST_ID
+          file_name: $GIST_NAME
+          file_content: ${{steps.get-run-meta.outputs.head_sha}}
+        env:
+          GIST_ID: GIST_${{matrix.branch}}
+          GITHUB_TOKEN: ${{ secrets.PAT }}
