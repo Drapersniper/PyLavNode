@@ -51,11 +51,12 @@ jobs:
           uses: sergeysova/gist-read-action@v1
           id: counter
           with:
-            gist_id: ${{vars[GIST_${{matrix.branch}}]}}
+            gist_id: ${{ vars[env.GIST_KEY] }}
             file_name: ${{ env.GIST_NAME }}
           env:
-            GIST_ID: GIST_${{matrix.branch}}
+            GIST_KEY: GIST_${{matrix.branch}}
             GITHUB_TOKEN: ${{ secrets.PAT }}
+
 
       -
         if: ${{ steps.example-gist.outputs.content == steps.get-run-meta.outputs.head_sha }}
@@ -141,8 +142,9 @@ jobs:
         if: steps.get-run-meta.outputs.success == 'success'
         uses: sergeysova/gist-write-action@v1
         with:
-          gist_id: ${{vars[GIST_${{matrix.branch}}]}}
+          gist_id: ${{ vars[env.GIST_KEY] }}
           file_name: ${{ env.GIST_NAME }}
           content: ${{steps.get-run-meta.outputs.head_sha}}
         env:
+          GIST_KEY: GIST_${{matrix.branch}}
           GITHUB_TOKEN: ${{ secrets.PAT }}
