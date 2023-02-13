@@ -55,7 +55,7 @@ jobs:
             file_name: ${{ env.GIST_NAME }}
           env:
             GIST_KEY: GIST_${{matrix.branch}}
-            GITHUB_TOKEN: ${{ secrets.PAT }}
+            GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
 
 
       -
@@ -148,4 +148,4 @@ jobs:
           content: ${{steps.get-run-meta.outputs.head_sha}}
         env:
           GIST_KEY: GIST_${{matrix.branch}}
-          GITHUB_TOKEN: ${{ secrets.PAT }}
+          GITHUB_TOKEN: ${{ secrets.PERSONAL_ACCESS_TOKEN }}
