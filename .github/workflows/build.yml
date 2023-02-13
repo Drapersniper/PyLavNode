@@ -139,11 +139,11 @@ jobs:
           cache-to: type=gha,mode=max
       - name: Update Gist
         if: steps.get-run-meta.outputs.success == 'success'
-        uses: sergeysova/gist-update-action@v1
+        uses: sergeysova/gist-write-action@v1
         with:
           gist_id: $GIST_ID
-          file_name: $GIST_NAME
-          file_content: ${{steps.get-run-meta.outputs.head_sha}}
+          file_name: ${{ env.GIST_NAME }}.txt
+          content: ${{steps.get-run-meta.outputs.head_sha}}
         env:
           GIST_ID: GIST_${{matrix.branch}}
           GITHUB_TOKEN: ${{ secrets.PAT }}
