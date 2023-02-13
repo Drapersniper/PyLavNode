@@ -66,7 +66,7 @@ jobs:
           echo build_needed=${{ steps.gist-read.outputs.content != steps.get-run-meta.outputs.head_sha }}  >> $GITHUB_OUTPUT
 
       -
-        if: steps.get-run-meta.outputs.success == 'success' && steps.check-build.outputs.build_needed != 'true'
+        if: steps.get-run-meta.outputs.success == 'success' && steps.check-build.outputs.build_needed == 'true'
         run: |
           mkdir -p ./extras
 
