@@ -59,7 +59,7 @@ jobs:
 
 
       -
-        if: ${{ steps.gist-read.outputs.content == steps.get-run-meta.outputs.head_sha }}
+        if: steps.gist-read.outputs.content == steps.get-run-meta.outputs.head_sha
         name: Check if build is needed
         run: |
           exit 0
