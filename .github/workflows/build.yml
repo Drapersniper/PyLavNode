@@ -52,7 +52,7 @@ jobs:
           id: counter
           with:
             gist_id: $GIST_ID
-            file_name: ${{ env.GIST_NAME }}.txt
+            file_name: ${{ env.GIST_NAME }}
           env:
             GIST_ID: GIST_${{matrix.branch}}
             GITHUB_TOKEN: ${{ secrets.PAT }}
@@ -142,7 +142,7 @@ jobs:
         uses: sergeysova/gist-write-action@v1
         with:
           gist_id: $GIST_ID
-          file_name: ${{ env.GIST_NAME }}.txt
+          file_name: ${{ env.GIST_NAME }}
           content: ${{steps.get-run-meta.outputs.head_sha}}
         env:
           GIST_ID: GIST_${{matrix.branch}}
