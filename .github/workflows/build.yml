@@ -48,7 +48,7 @@ jobs:
       -
           if: steps.get-run-meta.outputs.success == 'success'
           name: Read Gist
-          uses: Drapersniper/gist-read-action@c559d3c667a46f209a794cb11d970b5d81eff94c
+          uses: sergeysova/gist-read-action@v1
           id: gist-read
           with:
             gist_id: ${{ vars[env.GIST_KEY] }}
@@ -141,7 +141,7 @@ jobs:
           cache-to: type=gha,mode=max,scope=${{ env.GIST_NAME }}
       - name: Update Gist
         if: steps.check-build.outputs.build_needed == 'true'
-        uses: Drapersniper/gist-write-action@40cbbdf6cb7b39cf3e1a4d9d51c04dcd2f1b477f
+        uses: sergeysova/gist-write-action@v1
         with:
           gist_id: ${{ vars[env.GIST_KEY] }}
           file_name: ${{ env.GIST_NAME }}
