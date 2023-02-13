@@ -59,31 +59,32 @@ jobs:
 
 
       -
-        if: steps.gist-read.outputs.content == steps.get-run-meta.outputs.head_sha
+        if: steps.get-run-meta.outputs.success == 'success'
         name: Check if build is needed
+        id: check-build
         run: |
-          exit 0
+          echo build_needed=${{ steps.gist-read.outputs.content != steps.get-run-meta.outputs.head_sha }}  >> $GITHUB_OUTPUT
 
       -
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' && steps.check-build.outputs.build_needed != 'true'
         run: |
           mkdir -p ./extras
 
       - name: Download application.yml
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.check-build.outputs.build_needed == 'true'
         run: |
           curl -o ./extras/application-ignore.yml ${{ vars.APPLICATION_YAML }}
 
       -
         name: "Download Latest Lavalink.jar"
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         run: |
           gh run --repo "${{ vars.UPSTREAM_REPO }}" download ${{steps.get-run-meta.outputs.run_id}} -n "${{ vars.UPSTREAM_ARTIFACT }}" --dir ./extras
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
       - name: Docker meta
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         id: meta
         uses: docker/metadata-action@v4
         with:
@@ -100,24 +101,24 @@ jobs:
 
       -
         name: Set up QEMU
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         uses: docker/setup-qemu-action@v2
 
       -
         name: Set up Docker Buildx
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         uses: docker/setup-buildx-action@v2
 
       -
         name: Login to Docker Hub
-        if: github.event_name != 'pull_request' && steps.get-run-meta.outputs.success == 'success'
+        if: github.event_name != 'pull_request' && steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         uses: docker/login-action@v2
         with:
           username: ${{ secrets.DOCKERHUB_USERNAME }}
           password: ${{ secrets.DOCKERHUB_TOKEN }}
       -
         name: Login to GHCR
-        if: github.event_name != 'pull_request' && steps.get-run-meta.outputs.success == 'success'
+        if: github.event_name != 'pull_request' && steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         uses: docker/login-action@v2
         with:
           registry: ghcr.io
@@ -126,7 +127,7 @@ jobs:
 
       -
         name: Build and push
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.get-run-meta.outputs.success == 'success' &&  steps.check-build.outputs.build_needed == 'true'
         uses: docker/build-push-action@v3
         with:
           context: .
@@ -139,7 +140,7 @@ jobs:
           cache-from: type=gha,scope=${{ env.GIST_NAME }}
           cache-to: type=gha,mode=max,scope=${{ env.GIST_NAME }}
       - name: Update Gist
-        if: steps.get-run-meta.outputs.success == 'success'
+        if: steps.check-build.outputs.build_needed == 'true'
         uses: sergeysova/gist-write-action@v1
         with:
           gist_id: ${{ vars[env.GIST_KEY] }}
