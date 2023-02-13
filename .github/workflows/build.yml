@@ -39,7 +39,7 @@ jobs:
           if: steps.get-run-meta.outputs.success == 'success'
           name: Set Gist File Name
           run: |
-                if [[ ${{ vars[matrix.branch] == vars.V4_FEATURE }} ]]; then
+                if [ "${{ vars[matrix.branch] }}" == "${{ vars.V4_FEATURE }}" ]; then
                     echo "GIST_NAME=feature.txt" >> "$GITHUB_ENV"
                 else
                     echo "GIST_NAME=${{vars[matrix.branch]}}.txt" >> "$GITHUB_ENV"
