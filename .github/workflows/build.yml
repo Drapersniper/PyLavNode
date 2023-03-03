@@ -137,8 +137,6 @@ jobs:
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
-          cache-from: type=gha,scope=${{ env.GIST_NAME }}
-          cache-to: type=gha,mode=max,scope=${{ env.GIST_NAME }}
       - name: Update Gist
         if: steps.check-build.outputs.build_needed == 'true'
         uses: sergeysova/gist-write-action@v1
