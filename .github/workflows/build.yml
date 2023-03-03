@@ -16,9 +16,6 @@ jobs:
             - DEV
             - V4
             - V4_FEATURE
-        arch:
-            - linux/arm64
-            - linux/amd64
     runs-on: [self-hosted, linux, x64]
     steps:
       -
@@ -134,10 +131,14 @@ jobs:
         uses: docker/build-push-action@v4.0.0
         with:
           context: .
-          platforms: ${{matrix.arch}}
+          platforms: |
+            linux/amd64
+            linux/arm64
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}
+          cache-from: type=gha,scope=${{ env.GIST_NAME }}
+          cache-to: type=gha,mode=max,scope=${{ env.GIST_NAME }}
       - name: Update Gist
         if: steps.check-build.outputs.build_needed == 'true'
         uses: sergeysova/gist-write-action@v1.0.0
