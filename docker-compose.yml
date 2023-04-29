@@ -10,7 +10,7 @@ services:
         # Mount the Plugin folder to avoid downloading the plugins every time the image starts up
         - ./lavalink/plugins:/opt/Lavalink/plugins:rw
         #  Mount this localtracks folder to the image to allow playback of media inside of '/localtracks'
-        -   ./localtracks:/localtracks:ro
+        - ./localtracks:/localtracks:ro
     ports:
       - "2155:2155"
     environment:
@@ -28,7 +28,7 @@ services:
 
         LAVALINK_PLUGINS_0_DEPENDENCY: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:538cf8f
         LAVALINK_PLUGINS_0_REPOSITORY: https://jitpack.io
-        LAVALINK_PLUGINS_1_DEPENDENCY: com.github.topisenpai:sponsorblock-plugin:71b12d1
+        LAVALINK_PLUGINS_1_DEPENDENCY: com.github.topisenpai:sponsorblock-plugin:2.0.0
         LAVALINK_PLUGINS_1_REPOSITORY: https://jitpack.io
         LAVALINK_PLUGINS_2_DEPENDENCY: com.dunctebot:skybot-lavalink-plugin:1.4.1
         LAVALINK_PLUGINS_2_REPOSITORY: https://m2.duncte123.dev/releases
