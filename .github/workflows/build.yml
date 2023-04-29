@@ -13,7 +13,6 @@ jobs:
             - STABLE
             - DEV
             - V4
-            - V4_FEATURE
     runs-on: [ubuntu-latest]
     steps:
       -
@@ -37,12 +36,7 @@ jobs:
           if: steps.get-run-meta.outputs.success == 'success'
           name: Set Gist File Name
           run: |
-                if [ "${{ vars[matrix.branch] }}" == "${{ vars.V4_FEATURE }}" ]; then
-                    echo "GIST_NAME=feature.txt" >> "$GITHUB_ENV"
-                else
-                    echo "GIST_NAME=${{vars[matrix.branch]}}.txt" >> "$GITHUB_ENV"
-                fi
-
+                echo "GIST_NAME=${{vars[matrix.branch]}}.txt" >> "$GITHUB_ENV"
       -
           if: steps.get-run-meta.outputs.success == 'success'
           name: Read Gist
@@ -95,7 +89,7 @@ jobs:
             type=raw,enable=true,priority=1000,prefix=${{steps.get-run-meta.outputs.branch}}-,value=latest
             type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-run-meta.outputs.branch}}
             type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-run-meta.outputs.head_sha}}
-            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.V4_FEATURE }}
+            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.DEV }}
 
       -
         name: Set up QEMU
@@ -131,7 +125,8 @@ jobs:
           context: .
           platforms: |
             linux/amd64
-            linux/arm64
+            linux/arm/v7
+            linux/arm64/v8
           push: ${{ github.event_name != 'pull_request' }}
           tags: ${{ steps.meta.outputs.tags }}
           labels: ${{ steps.meta.outputs.labels }}

@@ -3,7 +3,7 @@ services:
     container_name: ll-node
     hostname: ll-node
     restart: always
-    image: ghcr.io/pylav/node:v4-latest
+    image: drapersniper/node:latest
     volumes:
         # Mount the Lavalink logs folder
         - ./lavalink/logs:/opt/Lavalink/logs:rw
