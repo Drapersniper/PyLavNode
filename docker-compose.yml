@@ -1,16 +1,16 @@
 services:
-  ll-node:
-    container_name: ll-node
-    hostname: ll-node
+  lavalink:
+    container_name: lavalink
+    hostname: lavalink
     restart: always
     image: drapersniper/node:latest
     volumes:
         # Mount the Lavalink logs folder
-        - ./lavalink/logs:/opt/Lavalink/logs:rw
+        - ./lavalink/logs:/opt/Lavalink/logs
         # Mount the Plugin folder to avoid downloading the plugins every time the image starts up
-        - ./lavalink/plugins:/opt/Lavalink/plugins:rw
+        - ./lavalink/plugins:/opt/Lavalink/plugins
         #  Mount this localtracks folder to the image to allow playback of media inside of '/localtracks'
-        - ./localtracks:/localtracks:ro
+        - ./localtracks:/localtracks
     ports:
       - "2155:2155"
     environment:
