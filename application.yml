@@ -30,7 +30,7 @@ lavalink:
     opusEncodingQuality: 10
     password: youshallnotpass
     playerUpdateInterval: 30
-    resamplingQuality: HIGH
+    resamplingQuality: MEDIUM
     soundcloudSearchEnabled: true
     sources:
       bandcamp: true
