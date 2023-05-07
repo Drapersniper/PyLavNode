@@ -97,6 +97,7 @@ plugins:
       countryCode: US
 #    deezer:
 #      masterDecryptionKey: CHANGE_ME
+##      P.S IT IS NOT id58zow5hmqhdv24zil4znth3ywy8prt9-dizzzrlba8q4h2al0ywmhp2zg-1d5g
 #    spotify:
 #      clientId: CHANGE_ME
 #      clientSecret: CHANGE_ME
