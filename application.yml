@@ -1,11 +1,11 @@
 
 lavalink:
   plugins:
-  - dependency: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:a0a5a35
-    repository: https://jitpack.io
+  - dependency: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:85b39d1
+    repository: https://maven.topi.wtf/snapshots
   - dependency: com.dunctebot:skybot-lavalink-plugin:1.4.1
     repository: https://m2.duncte123.dev/releases
-  - dependency: com.github.topisenpai:sponsorblock-plugin:1.0.5
+  - dependency: com.github.topisenpai:sponsorblock-plugin:2.0.0
     repository: https://jitpack.io
   - dependency: me.rohank05:lavalink-filter-plugin:0.0.1
     repository: https://jitpack.io
@@ -30,7 +30,7 @@ lavalink:
     opusEncodingQuality: 10
     password: youshallnotpass
     playerUpdateInterval: 30
-    resamplingQuality: HIGH
+    resamplingQuality: MEDIUM
     soundcloudSearchEnabled: true
     sources:
       bandcamp: true
@@ -97,6 +97,7 @@ plugins:
       countryCode: US
 #    deezer:
 #      masterDecryptionKey: CHANGE_ME
+##      P.S IT IS NOT id58zow5hmqhdv24zil4znth3ywy8prt9-dizzzrlba8q4h2al0ywmhp2zg-1d5g
 #    spotify:
 #      clientId: CHANGE_ME
 #      clientSecret: CHANGE_ME

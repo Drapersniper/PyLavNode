@@ -1,16 +1,16 @@
 services:
-  ll-node:
-    container_name: ll-node
-    hostname: ll-node
+  lavalink:
+    container_name: lavalink
+    hostname: lavalink
     restart: always
-    image: ghcr.io/pylav/node:latest
+    image: drapersniper/node:latest
     volumes:
         # Mount the Lavalink logs folder
-        - ./lavalink/logs:/opt/Lavalink/logs:rw
+        - ./lavalink/logs:/opt/Lavalink/logs
         # Mount the Plugin folder to avoid downloading the plugins every time the image starts up
-        - ./lavalink/plugins:/opt/Lavalink/plugins:rw
+        - ./lavalink/plugins:/opt/Lavalink/plugins
         #  Mount this localtracks folder to the image to allow playback of media inside of '/localtracks'
-        -   ./localtracks:/localtracks:ro
+        - ./localtracks:/localtracks
     ports:
       - "2155:2155"
     environment:
@@ -26,9 +26,9 @@ services:
         SERVER_ADDRESS: 0.0.0.0 # The interface to bind to
         SERVER_PORT: 2155 # The port to bind to
 
-        LAVALINK_PLUGINS_0_DEPENDENCY: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:538cf8f
-        LAVALINK_PLUGINS_0_REPOSITORY: https://jitpack.io
-        LAVALINK_PLUGINS_1_DEPENDENCY: com.github.topisenpai:sponsorblock-plugin:71b12d1
+        LAVALINK_PLUGINS_0_DEPENDENCY: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:85b39d1
+        LAVALINK_PLUGINS_0_REPOSITORY: https://maven.topi.wtf/snapshots
+        LAVALINK_PLUGINS_1_DEPENDENCY: com.github.topisenpai:sponsorblock-plugin:2.0.0
         LAVALINK_PLUGINS_1_REPOSITORY: https://jitpack.io
         LAVALINK_PLUGINS_2_DEPENDENCY: com.dunctebot:skybot-lavalink-plugin:1.4.1
         LAVALINK_PLUGINS_2_REPOSITORY: https://m2.duncte123.dev/releases
@@ -64,7 +64,7 @@ services:
         LAVALINK_SERVER_OPUSENCODINGQUALITY: 10 # Opus encoder quality. Valid values range from 0 to 10, where 10 is best quality but is the most expensive on the CPU.
         LAVALINK_SERVER_PASSWORD: CHANGE_ME  # Password for the Lavalink server
         LAVALINK_SERVER_PLAYERUPDATEINTERVAL: 30 # How frequently to send player updates to clients, in seconds
-        LAVALINK_SERVER_RESAMPLINGQUALITY: HIGH  # Quality of resampling operations. Valid values are LOW, MEDIUM and HIGH, where HIGH uses the most CPU.
+        LAVALINK_SERVER_RESAMPLINGQUALITY: MEDIUM  # Quality of resampling operations. Valid values are LOW, MEDIUM and HIGH, where HIGH uses the most CPU.
         LAVALINK_SERVER_SOUNDCLOUDSEARCHENABLED: true # Enable SoundCloud Search
         LAVALINK_SERVER_TRACKSTUCKTHRESHOLDMS: 10000 # The threshold for how long a track can be stuck. A track is stuck if does not return any audio data.
         LAVALINK_SERVER_USESEEKGHOSTING: true # Seek ghosting is the effect where whilst a seek is in progress, the audio buffer is read from until empty, or until seek is ready.
