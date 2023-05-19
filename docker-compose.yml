@@ -17,11 +17,11 @@ services:
         _JAVA_OPTIONS: -Xmx4G
 
         # Spring Options
-        SERVER_COMPRESSION_ENABLED: true
+        SERVER_COMPRESSION_ENABLED: true # Useful for remote servers with constrained bandwidth, but uses more CPU
 
         # Undertow Options
-        SERVER_UNDERTOW_THREADS_IO: 64
-        SERVER_UNDERTOW_THREADS_WORKER: 2048
+        SERVER_UNDERTOW_THREADS_IO: 64 # 2 * number of cores
+        SERVER_UNDERTOW_THREADS_WORKER: 2048 # 8 * number of cores
 
         SERVER_ADDRESS: 0.0.0.0 # The interface to bind to
         SERVER_PORT: 2155 # The port to bind to
