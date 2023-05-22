@@ -89,7 +89,8 @@ jobs:
             type=raw,enable=true,priority=1000,prefix=${{steps.get-run-meta.outputs.branch}}-,value=latest
             type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-run-meta.outputs.branch}}
             type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-run-meta.outputs.head_sha}}
-            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.DEV }}
+            #TODO: Change to develop when V4 is merged
+            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.V4 }}
 
       -
         name: Set up QEMU
