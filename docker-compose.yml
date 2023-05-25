@@ -28,7 +28,7 @@ services:
         SERVER_ADDRESS: 0.0.0.0 # The interface to bind to
         SERVER_PORT: 2155 # The port to bind to
 
-        LAVALINK_PLUGINS_0_DEPENDENCY: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:218199b
+        LAVALINK_PLUGINS_0_DEPENDENCY: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:d81d18f
         LAVALINK_PLUGINS_0_REPOSITORY: https://maven.topi.wtf/snapshots
         LAVALINK_PLUGINS_1_DEPENDENCY: com.github.topisenpai:sponsorblock-plugin:2.0.0
         LAVALINK_PLUGINS_1_REPOSITORY: https://jitpack.io

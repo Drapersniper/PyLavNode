@@ -1,7 +1,7 @@
 
 lavalink:
   plugins:
-  - dependency: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:218199b
+  - dependency: com.github.TopiSenpai.LavaSrc:lavasrc-plugin:d81d18f
     repository: https://maven.topi.wtf/snapshots
   - dependency: com.dunctebot:skybot-lavalink-plugin:1.4.1
     repository: https://m2.duncte123.dev/releases
