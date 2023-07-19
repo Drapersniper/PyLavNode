@@ -11,8 +11,6 @@ jobs:
       matrix:
         branch:
             - STABLE
-            - DEV
-            - V4
     runs-on: [ubuntu-latest]
     steps:
       -
@@ -89,8 +87,7 @@ jobs:
             type=raw,enable=true,priority=1000,prefix=${{steps.get-run-meta.outputs.branch}}-,value=latest
             type=raw,enable=true,priority=900,prefix=,suffix=,value=${{steps.get-run-meta.outputs.branch}}
             type=raw,enable=true,priority=100,prefix=sha-,suffix=,value=${{steps.get-run-meta.outputs.head_sha}}
-            #TODO: Change to develop when V4 is merged
-            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.V4 }}
+            type=raw,value=latest,enable=${{ steps.get-run-meta.outputs.branch == vars.STABLE }}
 
       -
         name: Set up QEMU
